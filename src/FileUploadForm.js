@@ -12,12 +12,32 @@ const FileUploadForm = () => {
   const [pdfUrl, setPdfUrl] = useState(null);
   const [numPages, setNumPages] = useState(null);
 
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     const selectedFile = event.target.files[0];
     setFile(selectedFile);
     if (selectedFile) {
-      const url = URL.createObjectURL(selectedFile);
-      setPdfUrl(url);
+      setLoading(true);
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+      formData.append(`masking_text`, "");
+      formData.append(`replacement_text`, "");
+
+      try {
+        const response = await fetch("http://localhost:8000/portfolio/mask", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (response.ok) {
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(new Blob([blob]));
+          setPdfUrl(url);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -44,11 +64,17 @@ const FileUploadForm = () => {
 
     const formData = new FormData();
     formData.append("file", file);
+    formData.append(`masking_text`, "");
+    formData.append(`replacement_text`, "");
     maskingTexts.forEach((text, index) => {
-      formData.append(`masking_text`, text);
+      if (text.trim() !== "") {
+        formData.append(`masking_text`, text);
+      }
     });
     replacementTexts.forEach((text, index) => {
-      formData.append(`replacement_text`, text);
+      if (text.trim() !== "") {
+        formData.append(`replacement_text`, text);
+      }
     });
 
     try {
@@ -132,15 +158,22 @@ const FileUploadForm = () => {
                     />
                   </div>
                   <div className="w-1/2">
-                    <input
-                      type="text"
+                    <select
                       id={`replacementText-${index}`}
                       value={replacementTexts[index]}
                       onChange={(e) =>
                         handleReplacementTextChange(index, e.target.value)
                       }
-                      className="mt-1 block w-full rounded-md border border-gray-200 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
-                    />
+                      className="mt-1 block w-full rounded-md border border-gray-200 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2 bg-white align-middle"
+                      style={{ height: "2.6rem" }}
+                    >
+                      <option value="" disabled hidden>
+                        선택하세요
+                      </option>
+                      <option value="option1">name</option>
+                      <option value="option2">univ</option>
+                      <option value="option3">etc</option>
+                    </select>
                   </div>
                 </div>
                 <button
@@ -207,11 +240,19 @@ const FileUploadForm = () => {
                 pageNumber={index + 1}
                 renderTextLayer={false}
                 renderAnnotationLayer={false}
+                scale={1.0}
+                width={600}
               />
             ))}
           </Document>
         ) : (
-          <p>여기에 제출한 포트폴리오의 내용이 표시됩니다.</p>
+          <p>
+            {loading ? (
+              <Loader2 className="animate-spin inline-block h-5 w-5 text-gray-500" />
+            ) : (
+              "여기에 제출한 포트폴리오의 내용이 표시됩니다."
+            )}
+          </p>
         )}
       </div>
     </div>
