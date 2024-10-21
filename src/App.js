@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import { Home, FileText, User, Mail, Menu, X } from "lucide-react";
+import Modal from "react-modal";
 
 // 기존의 PortfolioForm 컴포넌트를 import 합니다.
 import PortfolioForm from "./PortfolioForm";
@@ -153,7 +154,7 @@ const Layout = ({ children }) => {
 
       {/* 메인 콘텐츠 */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white shadow-sm z-10">
+        <header className="bg-white shadow-sm z-5">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
