@@ -155,6 +155,7 @@ const PortfolioForm = () => {
       <ModalFileUploadForm
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
+        onFileUpload={handleFileUpload}
       />
     </div>
   );

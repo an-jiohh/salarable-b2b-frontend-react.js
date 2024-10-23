@@ -1,24 +1,27 @@
 import React, { useState } from "react";
-import { Loader2, Upload, Trash2, PlusCircle } from "lucide-react";
+import { Loader2, Upload, Trash2, PlusCircle, EyeOff } from "lucide-react";
 import { Document, Page, pdfjs } from "react-pdf";
 import Modal from "react-modal";
 import "./styles/modal.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
 
-const ModalFileUploadForm = ({ isOpen, onRequestClose }) => {
+const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
   const [file, setFile] = useState(null);
   const [maskingTexts, setMaskingTexts] = useState([""]);
   const [replacementTexts, setReplacementTexts] = useState([""]);
   const [loading, setLoading] = useState(false);
   const [pdfUrl, setPdfUrl] = useState(null);
+  const [maskingText, setMaskingText] = useState("");
   const [numPages, setNumPages] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
+  //파일 선택
   const handleFileChange = async (event) => {
     const selectedFile = event.target.files[0];
     setFile(selectedFile);
     if (selectedFile) {
-      setLoading(true);
+      setIsUploading(true);
       const formData = new FormData();
       formData.append("file", selectedFile);
       formData.append(`masking_text`, "");
@@ -34,33 +37,21 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose }) => {
           const blob = await response.blob();
           const url = window.URL.createObjectURL(new Blob([blob]));
           setPdfUrl(url);
+          //const text = await blob.text();
+          const text = "asdf";
+          setMaskingText(text);
+          //onFileUpload(text);
         }
       } catch (error) {
         console.error("Error:", error);
       } finally {
-        setLoading(false);
+        setIsUploading(false);
       }
     }
   };
 
-  const handleMaskingTextChange = (index, value) => {
-    const newMaskingTexts = [...maskingTexts];
-    newMaskingTexts[index] = value;
-    setMaskingTexts(newMaskingTexts);
-  };
-
-  const handleReplacementTextChange = (index, value) => {
-    const newReplacementTexts = [...replacementTexts];
-    newReplacementTexts[index] = value;
-    setReplacementTexts(newReplacementTexts);
-  };
-
-  const addTextFields = () => {
-    setMaskingTexts([...maskingTexts, ""]);
-    setReplacementTexts([...replacementTexts, ""]);
-  };
-
-  const handleSubmit = async (event) => {
+  //마스킹 시
+  const handleMasking = async (event) => {
     event.preventDefault();
     setLoading(true);
 
@@ -88,13 +79,40 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose }) => {
       if (response.ok) {
         const blob = await response.blob();
         const url = window.URL.createObjectURL(new Blob([blob]));
-        setPdfUrl(url);
+        //const text = await blob.text();
+        const text = "asdf";
+        setMaskingText(text);
+        //onFileUpload(text);
       }
     } catch (error) {
       console.error("Error:", error);
     } finally {
       setLoading(false);
     }
+  };
+
+  //제출 시
+  const handleSubmit = async () => {
+    onFileUpload(maskingText);
+    setPdfUrl(false);
+    onRequestClose();
+  };
+
+  const handleMaskingTextChange = (index, value) => {
+    const newMaskingTexts = [...maskingTexts];
+    newMaskingTexts[index] = value;
+    setMaskingTexts(newMaskingTexts);
+  };
+
+  const handleReplacementTextChange = (index, value) => {
+    const newReplacementTexts = [...replacementTexts];
+    newReplacementTexts[index] = value;
+    setReplacementTexts(newReplacementTexts);
+  };
+
+  const addTextFields = () => {
+    setMaskingTexts([...maskingTexts, ""]);
+    setReplacementTexts([...replacementTexts, ""]);
   };
 
   const onDocumentLoadSuccess = ({ numPages }) => {
@@ -113,7 +131,7 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose }) => {
           <h1 className="text-2xl font-semibold text-gray-900 mb-6">
             포트폴리오 업로드
           </h1>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleMasking} className="space-y-6">
             <div>
               <label
                 htmlFor="file"
@@ -212,23 +230,39 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose }) => {
                 <PlusCircle className="h-5 w-5" />
               </button>
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-end space-x-4">
               <button
                 type="submit"
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={loading || !file}
+                disabled={loading || isUploading || !file}
+                onClick={handleMasking}
               >
                 {loading ? (
                   <>
                     <Loader2 className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
-                    처리 중...
+                    마스킹 중...
+                  </>
+                ) : isUploading ? (
+                  <>
+                    <Loader2 className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
+                    업로드 중...
                   </>
                 ) : (
                   <>
-                    <Upload className="mr-2 h-5 w-5" />
-                    제출
+                    <EyeOff className="mr-2 h-5 w-5" />
+                    마스킹
                   </>
                 )}
+              </button>
+              <button
+                type="submit"
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={handleSubmit}
+              >
+                <>
+                  <Upload className="mr-2 h-5 w-5" />
+                  제출
+                </>
               </button>
             </div>
           </form>
