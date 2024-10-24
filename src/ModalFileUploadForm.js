@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Loader2, Upload, Trash2, PlusCircle, EyeOff } from "lucide-react";
+import { Loader2, Upload, Trash2, PlusCircle, EyeOff, X } from "lucide-react";
 import { Document, Page, pdfjs } from "react-pdf";
 import Modal from "react-modal";
 import "./styles/modal.css";
@@ -96,7 +96,6 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
 
       // JSON 객체 생성
       const jsonData = { file_name: file.name };
-      console.log(jsonData);
 
       const response = await fetch(
         "http://localhost:8000/portfolio/maskedText",
@@ -155,8 +154,15 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
       className="modal"
       overlayClassName="overlay"
     >
-      <div className="flex space-x-4">
-        <div className="flex-1 max-w-4xl p-6 bg-white rounded-lg shadow-md">
+      <div className="relative flex h-full">
+        <button
+          onClick={onRequestClose}
+          className="absolute top-2 right-2 p-2 text-gray-400 hover:text-gray-600"
+          aria-label="닫기"
+        >
+          <X className="h-6 w-6" />
+        </button>
+        <div className="flex-1 p-6 bg-white rounded-lg shadow-md overflow-y-auto">
           <h1 className="text-2xl font-semibold text-gray-900 mb-6">
             포트폴리오 업로드
           </h1>
@@ -304,10 +310,7 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
             </div>
           </form>
         </div>
-        <div
-          className="flex-1 max-w-4xl p-6 bg-white rounded-lg shadow-md overflow-y-auto"
-          style={{ maxHeight: "calc(100vh - 120px)" }}
-        >
+        <div className="flex-1 p-6 bg-white rounded-lg shadow-md overflow-y-auto">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
             제출한 포트폴리오.pdf
           </h2>
