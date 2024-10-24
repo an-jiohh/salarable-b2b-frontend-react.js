@@ -12,9 +12,9 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
   const [replacementTexts, setReplacementTexts] = useState([""]);
   const [loading, setLoading] = useState(false);
   const [pdfUrl, setPdfUrl] = useState(null);
-  const [maskingText, setMaskingText] = useState("");
   const [numPages, setNumPages] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   //파일 선택
   const handleFileChange = async (event) => {
@@ -37,10 +37,6 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
           const blob = await response.blob();
           const url = window.URL.createObjectURL(new Blob([blob]));
           setPdfUrl(url);
-          //const text = await blob.text();
-          const text = "asdf";
-          setMaskingText(text);
-          //onFileUpload(text);
         }
       } catch (error) {
         console.error("Error:", error);
@@ -80,10 +76,6 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
         const blob = await response.blob();
         const url = window.URL.createObjectURL(new Blob([blob]));
         setPdfUrl(url);
-        //const text = await blob.text();
-        const text = "asdf";
-        setMaskingText(text);
-        //onFileUpload(text);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -94,39 +86,47 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
 
   //제출 시
   const handleSubmit = async (event) => {
-    setPdfUrl(false);
-    setMaskingTexts([]);
-    setReplacementTexts([]);
-    onRequestClose();
-    onFileUpload("asdf");
-    // event.preventDefault();
+    setIsSubmitting(true);
+    event.preventDefault();
 
-    // try {
-    //   // 파일 이름 가져오기 (file 상태가 File 객체라고 가정)
-    //   const fileName = file ? file.name : "";
+    try {
+      if (!file) {
+        throw new Error("파일이 선택되지 않았습니다.");
+      }
 
-    //   const response = await fetch("http://localhost:8000/maskedText", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({ file_name: fileName }),
-    //   });
+      // JSON 객체 생성
+      const jsonData = { file_name: file.name };
+      console.log(jsonData);
 
-    //   if (response.ok) {
-    //     const result = await response.json();
-    //     // 결과 처리
-    //     onFileUpload(result.masked_text); // 서버 응답에 masked_text가 포함되어 있다고 가정
-    //     onRequestClose();
-    //     setPdfUrl(false);
-    //   } else {
-    //     console.error("서버 응답 오류:", response.status);
-    //   }
-    // } catch (error) {
-    //   console.error("제출 오류:", error);
-    // }
+      const response = await fetch(
+        "http://localhost:8000/portfolio/maskedText",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(jsonData),
+        }
+      );
+
+      if (response.ok && response.status === 200) {
+        const result = await response.json();
+        // 결과 처리
+        onFileUpload(result.masked_text); // 서버 응답에 masked_text가 포함되어 있다고 가정
+        setPdfUrl(false);
+        setMaskingTexts([""]);
+        setReplacementTexts([""]);
+        onRequestClose();
+      } else {
+        console.error("서버 응답 오류:", response.status);
+        alert("제출 중 오류가 발생했습니다.");
+      }
+    } catch (error) {
+      console.error("제출 오류:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
-
   const handleMaskingTextChange = (index, value) => {
     const newMaskingTexts = [...maskingTexts];
     newMaskingTexts[index] = value;
@@ -286,12 +286,20 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
               <button
                 type="submit"
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isSubmitting || !file}
                 onClick={handleSubmit}
               >
-                <>
-                  <Upload className="mr-2 h-5 w-5" />
-                  제출
-                </>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
+                    제출 중...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="mr-2 h-5 w-5" />
+                    제출
+                  </>
+                )}
               </button>
             </div>
           </form>
