@@ -79,6 +79,7 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
       if (response.ok) {
         const blob = await response.blob();
         const url = window.URL.createObjectURL(new Blob([blob]));
+        setPdfUrl(url);
         //const text = await blob.text();
         const text = "asdf";
         setMaskingText(text);
@@ -92,10 +93,38 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
   };
 
   //제출 시
-  const handleSubmit = async () => {
-    onFileUpload(maskingText);
+  const handleSubmit = async (event) => {
     setPdfUrl(false);
+    setMaskingTexts([]);
+    setReplacementTexts([]);
     onRequestClose();
+    onFileUpload("asdf");
+    // event.preventDefault();
+
+    // try {
+    //   // 파일 이름 가져오기 (file 상태가 File 객체라고 가정)
+    //   const fileName = file ? file.name : "";
+
+    //   const response = await fetch("http://localhost:8000/maskedText", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({ file_name: fileName }),
+    //   });
+
+    //   if (response.ok) {
+    //     const result = await response.json();
+    //     // 결과 처리
+    //     onFileUpload(result.masked_text); // 서버 응답에 masked_text가 포함되어 있다고 가정
+    //     onRequestClose();
+    //     setPdfUrl(false);
+    //   } else {
+    //     console.error("서버 응답 오류:", response.status);
+    //   }
+    // } catch (error) {
+    //   console.error("제출 오류:", error);
+    // }
   };
 
   const handleMaskingTextChange = (index, value) => {
