@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Loader2, Upload, Trash2, PlusCircle, EyeOff, X } from "lucide-react";
+import {
+  Loader2,
+  Upload,
+  Trash2,
+  PlusCircle,
+  EyeOff,
+  X,
+  RefreshCw,
+} from "lucide-react";
 import { Document, Page, pdfjs } from "react-pdf";
 import Modal from "react-modal";
 import "./styles/modal.css";
@@ -19,6 +27,13 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
   //파일 선택
   const handleFileChange = async (event) => {
     const selectedFile = event.target.files[0];
+
+    if (selectedFile && selectedFile.type !== "application/pdf") {
+      alert("PDF 파일만 업로드 가능합니다.");
+      event.target.value = null; // 파일 선택 초기화
+      return;
+    }
+
     setFile(selectedFile);
     if (selectedFile) {
       setIsUploading(true);
@@ -49,8 +64,17 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
   //마스킹 시
   const handleMasking = async (event) => {
     event.preventDefault();
-    setLoading(true);
+    // 유효한 마스킹 텍스트와 대체 텍스트가 있는지 확인
+    const validMaskingTexts = maskingTexts.filter((text) => text.trim() !== "");
+    const validReplacementTexts = replacementTexts.filter(
+      (text) => text.trim() !== ""
+    );
+    if (validMaskingTexts.length === 0 || validReplacementTexts.length === 0) {
+      alert("마스킹할 텍스트와 대체할 텍스트를 모두 입력해주세요.");
+      return;
+    }
 
+    setLoading(true);
     const formData = new FormData();
     formData.append("file", file);
     formData.append(`masking_text`, "");
@@ -126,6 +150,12 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
       setIsSubmitting(false);
     }
   };
+  const handleReset = () => {
+    setFile(null);
+    setPdfUrl(null);
+    setMaskingTexts([""]);
+    setReplacementTexts([""]);
+  };
   const handleMaskingTextChange = (index, value) => {
     const newMaskingTexts = [...maskingTexts];
     newMaskingTexts[index] = value;
@@ -156,16 +186,28 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
     >
       <div className="relative flex h-full">
         <button
-          onClick={onRequestClose}
+          onClick={() => {
+            handleReset();
+            onRequestClose();
+          }}
           className="absolute top-2 right-2 p-2 text-gray-400 hover:text-gray-600"
           aria-label="닫기"
         >
           <X className="h-6 w-6" />
         </button>
         <div className="flex-1 p-6 bg-white rounded-lg shadow-md overflow-y-auto">
-          <h1 className="text-2xl font-semibold text-gray-900 mb-6">
-            포트폴리오 업로드
-          </h1>
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-semibold text-gray-900">
+              포트폴리오 업로드
+            </h1>
+            <button
+              onClick={handleReset}
+              className="w-8 h-8 flex items-center justify-center bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              aria-label="초기화"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </button>
+          </div>
           <form onSubmit={handleMasking} className="space-y-6">
             <div>
               <label

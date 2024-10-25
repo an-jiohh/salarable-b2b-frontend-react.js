@@ -134,7 +134,7 @@ const Layout = ({ children }) => {
       >
         <div className="w-64 bg-white h-full shadow-lg">
           <div className="flex items-center justify-between p-4 border-b h-16">
-            <span className="text-xl font-semibold">Salarable</span>
+            <img src="/gridge_logo.png" alt="Salarable 로고" className="h-8" />
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="md:hidden"
@@ -143,9 +143,9 @@ const Layout = ({ children }) => {
             </button>
           </div>
           <nav className="mt-6">
-            <NavLink to="/" icon={<Home />} label="대시보드" />
-            <NavLink to="/portfolio" icon={<FileText />} label="대질문 생성" />
-            <NavLink to="/upload" icon={<FileText />} label="파일 업로드" />
+            <NavLink to="/" icon={<Home />} label="대질문 생성" />
+            {/* <NavLink to="/portfolio" icon={<FileText />} label="대질문 생성" />
+            <NavLink to="/upload" icon={<FileText />} label="파일 업로드" /> */}
             {/* <NavLink to="/profile" icon={<User />} label="프로필" /> */}
             {/* <NavLink to="/messages" icon={<Mail />} label="메시지" /> */}
           </nav>
@@ -162,12 +162,14 @@ const Layout = ({ children }) => {
             >
               <Menu className="h-6 w-6" />
             </button>
-            <h1 className="text-2xl font-semibold text-gray-900">대시보드</h1>
-            <div className="flex items-center">
+            <h1 className="text-2xl font-semibold text-gray-900">
+              대질문 생성
+            </h1>
+            {/* <div className="flex items-center">
               <span className="bg-gray-200 rounded-full p-2">
                 <User className="h-6 w-6" />
               </span>
-            </div>
+            </div> */}
           </div>
         </header>
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
@@ -193,11 +195,11 @@ const App = () => {
     <Router>
       <Layout>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/portfolio" element={<PortfolioForm />} />
+          <Route path="/" element={<PortfolioForm />} />
+          {/* <Route path="/portfolio" element={<PortfolioForm />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/messages" element={<Messages />} />
-          <Route path="/upload" element={<FileUploadForm />} />
+          <Route path="/upload" element={<FileUploadForm />} /> */}
         </Routes>
       </Layout>
     </Router>
