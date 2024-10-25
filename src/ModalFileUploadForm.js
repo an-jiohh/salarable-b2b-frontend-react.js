@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   Loader2,
   Upload,
@@ -23,6 +23,7 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
   const [numPages, setNumPages] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const fileInputRef = useRef(null);
 
   //파일 선택
   const handleFileChange = async (event) => {
@@ -43,10 +44,13 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
       formData.append(`replacement_text`, "");
 
       try {
-        const response = await fetch("http://localhost:8000/portfolio/mask", {
-          method: "POST",
-          body: formData,
-        });
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/portfolio/mask`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
 
         if (response.ok) {
           const blob = await response.blob();
@@ -69,7 +73,11 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
     const validReplacementTexts = replacementTexts.filter(
       (text) => text.trim() !== ""
     );
-    if (validMaskingTexts.length === 0 || validReplacementTexts.length === 0) {
+    if (
+      validMaskingTexts.length === 0 ||
+      validReplacementTexts.length === 0 ||
+      validMaskingTexts.length !== validReplacementTexts.length
+    ) {
       alert("마스킹할 텍스트와 대체할 텍스트를 모두 입력해주세요.");
       return;
     }
@@ -91,10 +99,13 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
     });
 
     try {
-      const response = await fetch("http://localhost:8000/portfolio/mask", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/portfolio/mask`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (response.ok) {
         const blob = await response.blob();
@@ -122,7 +133,7 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
       const jsonData = { file_name: file.name };
 
       const response = await fetch(
-        "http://localhost:8000/portfolio/maskedText",
+        `${process.env.REACT_APP_API_URL}/portfolio/maskdText`,
         {
           method: "POST",
           headers: {
@@ -136,9 +147,7 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
         const result = await response.json();
         // 결과 처리
         onFileUpload(result.masked_text); // 서버 응답에 masked_text가 포함되어 있다고 가정
-        setPdfUrl(false);
-        setMaskingTexts([""]);
-        setReplacementTexts([""]);
+        handleReset();
         onRequestClose();
       } else {
         console.error("서버 응답 오류:", response.status);
@@ -155,6 +164,9 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
     setPdfUrl(null);
     setMaskingTexts([""]);
     setReplacementTexts([""]);
+  };
+  const handleButtonClick = () => {
+    fileInputRef.current.click();
   };
   const handleMaskingTextChange = (index, value) => {
     const newMaskingTexts = [...maskingTexts];
@@ -216,17 +228,26 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
               >
                 파일 업로드:
               </label>
-              <input
-                type="file"
-                id="file"
-                onChange={handleFileChange}
-                className="mt-1 block w-full text-sm text-gray-500
-              file:mr-4 file:py-2 file:px-4
-              file:rounded-full file:border-0
-              file:text-sm file:font-semibold
-              file:bg-indigo-50 file:text-indigo-700
-              hover:file:bg-indigo-100"
-              />
+              <div className="mt-1 flex items-center">
+                <input
+                  type="file"
+                  id="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={handleButtonClick}
+                  className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  <Upload className="mr-2 h-5 w-5" />
+                  파일 선택
+                </button>
+                <span className="ml-3 text-sm text-gray-500">
+                  {file ? file.name : "선택된 파일 없음"}
+                </span>
+              </div>
             </div>
             <div className="space-y-4">
               <div className="flex space-x-2">

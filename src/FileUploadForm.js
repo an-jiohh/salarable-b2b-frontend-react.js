@@ -23,10 +23,13 @@ const FileUploadForm = () => {
       formData.append(`replacement_text`, "");
 
       try {
-        const response = await fetch("http://localhost:8000/portfolio/mask", {
-          method: "POST",
-          body: formData,
-        });
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/portfolio/mask`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
 
         if (response.ok) {
           const blob = await response.blob();
@@ -78,10 +81,13 @@ const FileUploadForm = () => {
     });
 
     try {
-      const response = await fetch("http://localhost:8000/portfolio/mask", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/portfolio/mask`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (response.ok) {
         const blob = await response.blob();
