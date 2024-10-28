@@ -133,7 +133,7 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
       const jsonData = { file_name: file.name };
 
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/portfolio/maskdText`,
+        `${process.env.REACT_APP_API_URL}/portfolio/maskedText`,
         {
           method: "POST",
           headers: {

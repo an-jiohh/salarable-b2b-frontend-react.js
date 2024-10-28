@@ -22,17 +22,20 @@ const PortfolioForm = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/create_question", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          portfolio_data: portfolio,
-          job_description_data: jobPosting,
-          input_position: applicationSkill,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/create_question`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            portfolio_data: portfolio,
+            job_description_data: jobPosting,
+            input_position: applicationSkill,
+          }),
+        }
+      );
       const data = await response.json();
       setResult(data);
     } catch (error) {
