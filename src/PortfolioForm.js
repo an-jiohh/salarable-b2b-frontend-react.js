@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import { Loader2, Copy } from "lucide-react";
+import ModalFileUploadForm from "./ModalFileUploadForm";
+import Modal from "react-modal";
+
+Modal.setAppElement("#root");
 
 const PortfolioForm = () => {
   const [portfolio, setPortfolio] = useState("");
@@ -7,22 +11,31 @@ const PortfolioForm = () => {
   const [applicationSkill, setApplicationSkill] = useState("FE");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleFileUpload = (uploadedPortfolio) => {
+    setPortfolio(uploadedPortfolio);
+    setIsModalOpen(false);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/create_question", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          portfolio_data: portfolio,
-          job_description_data: jobPosting,
-          input_position: applicationSkill,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/create_question`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            portfolio_data: portfolio,
+            job_description_data: jobPosting,
+            input_position: applicationSkill,
+          }),
+        }
+      );
       const data = await response.json();
       setResult(data);
     } catch (error) {
@@ -50,6 +63,13 @@ const PortfolioForm = () => {
             className="mt-1 block w-full rounded-md border border-gray-200 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
             placeholder="포트폴리오를 입력하세요..."
           />
+          <button
+            type="button"
+            onClick={() => setIsModalOpen(true)}
+            className="mt-2 px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            포트폴리오 첨부
+          </button>
         </div>
 
         <div>
@@ -133,6 +153,13 @@ const PortfolioForm = () => {
           </div>
         </div>
       )}
+
+      {/* 모달 파일 업로드 폼 */}
+      <ModalFileUploadForm
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        onFileUpload={handleFileUpload}
+      />
     </div>
   );
 };
