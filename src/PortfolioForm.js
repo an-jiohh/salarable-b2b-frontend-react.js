@@ -23,7 +23,7 @@ const PortfolioForm = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/create_question`,
+        `${process.env.REACT_APP_API_URL}/v4/create_question`,
         {
           method: "POST",
           headers: {
@@ -125,7 +125,7 @@ const PortfolioForm = () => {
         </div>
       </form>
 
-      {result && (
+      {/* {result && (
         <div className="mt-6 p-4 bg-gray-100 rounded-md relative">
           <h3 className="text-lg font-medium text-gray-900">결과:</h3>
           <button
@@ -141,13 +141,147 @@ const PortfolioForm = () => {
           >
             <Copy className="h-5 w-5" />
           </button>
-          <div className="mt-2 text-sm text-gray-700">
-            {Object.entries(result.output_data).map(([key, values]) => (
-              <div key={key} className="mb-4">
-                <h4 className="font-semibold">{key}</h4>
-                {values.map((value, index) => (
-                  <p key={index}>{value}</p>
-                ))}
+        </div>
+      )} */}
+      {result && (
+        <div className="mt-2 text-sm text-gray-700">
+          <h3 className="text-lg font-medium text-gray-900">Wow Point 질문</h3>
+          <div className="mt-6 p-4 bg-gray-100 rounded-md relative mb-4">
+            <h3 className="text-md font-medium text-gray-900">
+              기술기반 Wow point
+            </h3>
+            {result.questions_wowpoint.questions_wowpoint_tech.map(
+              (question, index) => (
+                <div key={index} className="mb-2">
+                  {question}
+                </div>
+              )
+            )}
+          </div>
+          <div className="mt-6 p-4 bg-gray-100 rounded-md relative mb-4">
+            <h3 className="text-sm font-medium text-gray-900">
+              경험기반 Wow point
+            </h3>
+            {result.questions_wowpoint.questions_wowpoint_experience.map(
+              (question, index) => (
+                <div key={index} className="mb-2">
+                  {question}
+                </div>
+              )
+            )}
+          </div>
+          <h3 className="text-lg font-medium text-gray-900">
+            의심스러운 정황 질문
+          </h3>
+          <div className="mt-6 p-4 bg-gray-100 rounded-md relative mb-4">
+            <h3 className="text-sm font-medium text-gray-900">
+              포트폴리오에서의 의심스러운 정황
+            </h3>
+            {result.questions_doubtpoint.doubt_questions_pf_only.map(
+              (question, index) => (
+                <div key={index} className="mb-2">
+                  {question}
+                </div>
+              )
+            )}
+          </div>
+          <div className="mt-6 p-4 bg-gray-100 rounded-md relative mb-4">
+            <h3 className="text-sm font-medium text-gray-900">
+              포트폴리오와 채용공고 모두에서의 의심스러운 정황
+            </h3>
+            {result.questions_doubtpoint.doubt_questions_jd_and_pf.map(
+              (question, index) => (
+                <div key={index} className="mb-2">
+                  {question}
+                </div>
+              )
+            )}
+          </div>
+          <h3 className="text-lg font-medium text-gray-900">
+            채용공고 - pf의 부합성, [채용공고, 포트폴리오] 교집합 질문:
+          </h3>
+          <h3 className="text-lg font-medium text-gray-900">자격요건</h3>
+          <div className="mt-6 p-4 bg-gray-100 rounded-md relative mb-4">
+            {Object.entries(
+              result.questions_requirements_in_pf_semantic_search
+            ).map(([key, value]) => (
+              <div key={key} className="mb-2">
+                <div className="font-semibold">{key}</div>
+                <ul className="list-disc pl-5">
+                  {value.experience_based_questions.map((question, index) => (
+                    <li key={index} className="mb-1">
+                      {question}
+                    </li>
+                  ))}
+                </ul>
+                <ul className="list-disc pl-5">
+                  {value.tech_based_questions.map((question, index) => (
+                    <li key={index} className="mb-1">
+                      {question}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <h3 className="text-lg font-medium text-gray-900">우대사항</h3>
+          <div className="mt-6 p-4 bg-gray-100 rounded-md relative mb-4">
+            {Object.entries(
+              result.questions_preferences_in_pf_semantic_search
+            ).map(([key, value]) => (
+              <div key={key} className="mb-2">
+                <div className="font-bold">{key}</div>
+                <ul className="list-disc pl-5">
+                  {value.experience_based_questions.map((question, index) => (
+                    <li key={index} className="mb-1">
+                      {question}
+                    </li>
+                  ))}
+                </ul>
+                <ul className="list-disc pl-5">
+                  {value.tech_based_questions.map((question, index) => (
+                    <li key={index} className="mb-1">
+                      {question}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <h3 className="text-lg font-medium text-gray-900">
+            채용공고 - pf의 부합성, [채용공고, 포트폴리오] 차집합 질문:
+          </h3>
+          <h3 className="text-lg font-medium text-gray-900">자격요건</h3>
+          <div className="mt-6 p-4 bg-gray-100 rounded-md relative mb-4">
+            {Object.entries(
+              result.questions_requirements_not_in_pf_semantic_search
+            ).map(([key, value]) => (
+              <div key={key} className="mb-2">
+                <div className="font-bold">{key}</div>
+                <ul className="list-disc pl-5">
+                  {value.map((item, index) => (
+                    <li key={index} className="mb-1">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <h3 className="text-lg font-medium text-gray-900">우대사항</h3>
+          <div className="mt-6 p-4 bg-gray-100 rounded-md relative mb-4">
+            {Object.entries(
+              result.questions_preferences_not_in_pf_semantic_search
+            ).map(([key, value]) => (
+              <div key={key} className="mb-2">
+                <div className="font-bold">{key}</div>
+                <ul className="list-disc pl-5">
+                  {value.map((item, index) => (
+                    <li key={index} className="mb-1">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
