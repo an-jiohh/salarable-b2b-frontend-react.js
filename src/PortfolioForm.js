@@ -36,10 +36,15 @@ const PortfolioForm = () => {
           }),
         }
       );
-      const data = await response.json();
-      setResult(data);
+      if (response.ok) {
+        const data = await response.json();
+        setResult(data);
+      } else {
+        alert("제출 중 오류가 발생했습니다. 다시 시도해주세요.");
+      }
     } catch (error) {
       console.error("Error:", error);
+      alert("파일 처리 중 오류가 발생했습니다.");
     } finally {
       setLoading(false);
     }

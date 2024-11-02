@@ -56,6 +56,8 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
           const blob = await response.blob();
           const url = window.URL.createObjectURL(new Blob([blob]));
           setPdfUrl(url);
+        } else {
+          alert("제출 중 오류가 발생했습니다. 다시 시도해주세요.");
         }
       } catch (error) {
         console.error("Error:", error);
@@ -111,6 +113,8 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
         const blob = await response.blob();
         const url = window.URL.createObjectURL(new Blob([blob]));
         setPdfUrl(url);
+      } else {
+        alert("제출 중 오류가 발생했습니다. 다시 시도해주세요.");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -150,8 +154,7 @@ const ModalFileUploadForm = ({ isOpen, onRequestClose, onFileUpload }) => {
         handleReset();
         onRequestClose();
       } else {
-        console.error("서버 응답 오류:", response.status);
-        alert("제출 중 오류가 발생했습니다.");
+        alert("제출 중 오류가 발생했습니다. 다시 시도해주세요.");
       }
     } catch (error) {
       console.error("제출 오류:", error);
