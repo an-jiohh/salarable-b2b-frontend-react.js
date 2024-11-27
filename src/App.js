@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import { Home, Menu } from "lucide-react";
+import { Home, Menu, FileText, User } from "lucide-react";
 
 // 기존의 PortfolioForm 컴포넌트를 import 합니다.
 import PortfolioForm from "./PortfolioForm";
+import MeetingBotInterface from "./MeetingBotInterface";
 
 // 추가 페이지 컴포넌트들 (예시)
 // const Dashboard = () => (
@@ -148,8 +149,8 @@ const Layout = ({ children }) => {
           </div>
           <nav className="mt-6">
             <NavLink to="/" icon={<Home />} label="대질문 생성" />
-            {/* <NavLink to="/portfolio" icon={<FileText />} label="대질문 생성" />
-            <NavLink to="/upload" icon={<FileText />} label="파일 업로드" /> */}
+            {/* <NavLink to="/meeting" icon={<User />} label="미팅 시작" /> */}
+            {/* <NavLink to="/upload" icon={<FileText />} label="파일 업로드" /> */}
             {/* <NavLink to="/profile" icon={<User />} label="프로필" /> */}
             {/* <NavLink to="/messages" icon={<Mail />} label="메시지" /> */}
           </nav>
@@ -200,8 +201,8 @@ const App = () => {
       <Layout>
         <Routes>
           <Route path="/" element={<PortfolioForm />} />
-          {/* <Route path="/portfolio" element={<PortfolioForm />} />
-          <Route path="/profile" element={<Profile />} />
+          {/* <Route path="/meeting" element={<MeetingBotInterface />} /> */}
+          {/* <Route path="/profile" element={<Profile />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/upload" element={<FileUploadForm />} /> */}
         </Routes>
