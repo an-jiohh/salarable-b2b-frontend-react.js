@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import { Home, Menu, FileText, User } from "lucide-react";
+import PortfolioFormV7 from "./PortfolioFormV7";
 
 // 기존의 PortfolioForm 컴포넌트를 import 합니다.
 import PortfolioForm from "./PortfolioForm";
@@ -200,7 +201,7 @@ const App = () => {
     <Router>
       <Layout>
         <Routes>
-          <Route path="/" element={<PortfolioForm />} />
+          <Route path="/" element={<PortfolioFormV7 />} />
           {/* <Route path="/meeting" element={<MeetingBotInterface />} /> */}
           {/* <Route path="/profile" element={<Profile />} />
           <Route path="/messages" element={<Messages />} />
