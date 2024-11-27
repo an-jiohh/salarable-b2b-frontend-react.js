@@ -290,25 +290,56 @@ const PortfolioForm = () => {
             <h3 className="text-lg font-medium text-gray-900 mb-3">
               자격요건 기준 week point 꼬리 질문
             </h3>
-            <div className="space-y-4">
-              {result.followed_questions_weakpoint_requirements?.requirements?.map(
-                (item, index) => (
-                  <div key={index} className="bg-gray-50 p-3 rounded">
-                    <p className="text-sm mb-2">
-                      <span className="font-medium">기술 키워드 : </span>
-                      {item?.tech_keyword}
-                    </p>
-                    <div className="space-y-2">
-                      {item?.questions?.map((question, qIndex) => (
-                        <p key={qIndex} className="text-sm">
-                          • {question}
+            {Array.isArray(
+              result.followed_questions_weakpoint_requirements.requirements
+            ) ? (
+              <div className="space-y-4">
+                {result.followed_questions_weakpoint_requirements.requirements.map(
+                  (item, index) => (
+                    <div key={index} className="bg-gray-50 p-3 rounded">
+                      {/* 기술 키워드가 있을 경우에만 표시 */}
+                      {item?.tech_keyword && (
+                        <p className="text-sm mb-2">
+                          <span className="font-medium">기술 키워드: </span>
+                          {item.tech_keyword}
                         </p>
-                      ))}
+                      )}
+                      <div className="space-y-2">
+                        {item?.questions?.map((question, qIndex) => (
+                          <p key={qIndex} className="text-sm">
+                            • {question}
+                          </p>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )
-              )}
-            </div>
+                  )
+                )}
+              </div>
+            ) : (
+              // requirements가 배열이 아닐 경우 객체로 처리
+              <div className="bg-gray-50 p-3 rounded">
+                {/* 기술 키워드가 있을 경우에만 표시 */}
+                {result.followed_questions_weakpoint_requirements.requirements
+                  .tech_keyword && (
+                  <p className="text-sm mb-2">
+                    <span className="font-medium">기술 키워드: </span>
+                    {
+                      result.followed_questions_weakpoint_requirements
+                        .requirements.tech_keyword
+                    }
+                  </p>
+                )}
+                <div className="space-y-2">
+                  {result.followed_questions_weakpoint_requirements.requirements.questions?.map(
+                    (question, index) => (
+                      <p key={index} className="text-sm">
+                        • {question}
+                      </p>
+                    )
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* 후속 우대사항 질문 */}
@@ -316,25 +347,56 @@ const PortfolioForm = () => {
             <h3 className="text-lg font-medium text-gray-900 mb-3">
               우대사항 기준 week point 꼬리 질문
             </h3>
-            <div className="space-y-4">
-              {result.followed_questions_weakpoint_preferences?.preferences?.map(
-                (item, index) => (
-                  <div key={index} className="bg-gray-50 p-3 rounded">
-                    <p className="text-sm mb-2">
-                      <span className="font-medium">기술 키워드 : </span>
-                      {item?.tech_keyword}
-                    </p>
-                    <div className="space-y-2">
-                      {item?.questions?.map((question, qIndex) => (
-                        <p key={qIndex} className="text-sm">
-                          • {question}
+            {Array.isArray(
+              result.followed_questions_weakpoint_preferences.preferences
+            ) ? (
+              <div className="space-y-4">
+                {result.followed_questions_weakpoint_preferences.preferences.map(
+                  (item, index) => (
+                    <div key={index} className="bg-gray-50 p-3 rounded">
+                      {/* 기술 키워드가 있을 경우에만 표시 */}
+                      {item?.tech_keyword && (
+                        <p className="text-sm mb-2">
+                          <span className="font-medium">기술 키워드: </span>
+                          {item.tech_keyword}
                         </p>
-                      ))}
+                      )}
+                      <div className="space-y-2">
+                        {item?.questions?.map((question, qIndex) => (
+                          <p key={qIndex} className="text-sm">
+                            • {question}
+                          </p>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )
-              )}
-            </div>
+                  )
+                )}
+              </div>
+            ) : (
+              // preferences가 배열이 아닐 경우 객체로 처리
+              <div className="bg-gray-50 p-3 rounded">
+                {/* 기술 키워드가 있을 경우에만 표시 */}
+                {result.followed_questions_weakpoint_preferences.preferences
+                  .tech_keyword && (
+                  <p className="text-sm mb-2">
+                    <span className="font-medium">기술 키워드: </span>
+                    {
+                      result.followed_questions_weakpoint_preferences
+                        .preferences.tech_keyword
+                    }
+                  </p>
+                )}
+                <div className="space-y-2">
+                  {result.followed_questions_weakpoint_preferences.preferences.questions?.map(
+                    (question, index) => (
+                      <p key={index} className="text-sm">
+                        • {question}
+                      </p>
+                    )
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* 후속 체크포인트 필수 질문 */}
@@ -342,14 +404,19 @@ const PortfolioForm = () => {
             <h3 className="text-lg font-medium text-gray-900 mb-3">
               자격요건 기준 check point 꼬리 질문
             </h3>
-            <div className="space-y-4">
-              {result.followed_questions_checkpoint_requirements?.requirements?.map(
+            {Array.isArray(
+              result.followed_questions_checkpoint_requirements.requirements
+            ) ? (
+              result.followed_questions_checkpoint_requirements.requirements.map(
                 (item, index) => (
                   <div key={index} className="bg-gray-50 p-3 rounded">
-                    <p className="text-sm mb-2">
-                      <span className="font-medium">기술 키워드 : </span>
-                      {item?.tech_keyword}
-                    </p>
+                    {/* 기술 키워드가 있을 경우에만 표시 */}
+                    {item?.tech_keyword && (
+                      <p className="text-sm mb-2">
+                        <span className="font-medium">기술 키워드: </span>
+                        {item.tech_keyword}
+                      </p>
+                    )}
                     <div className="space-y-2">
                       {item?.questions?.map((question, qIndex) => (
                         <p key={qIndex} className="text-sm">
@@ -359,8 +426,31 @@ const PortfolioForm = () => {
                     </div>
                   </div>
                 )
-              )}
-            </div>
+              )
+            ) : (
+              <div className="bg-gray-50 p-3 rounded">
+                {/* 기술 키워드가 있을 경우에만 표시 */}
+                {result.followed_questions_checkpoint_requirements.requirements
+                  .tech_keyword && (
+                  <p className="text-sm mb-2">
+                    <span className="font-medium">기술 키워드: </span>
+                    {
+                      result.followed_questions_checkpoint_requirements
+                        .requirements.tech_keyword
+                    }
+                  </p>
+                )}
+                <div className="space-y-2">
+                  {result.followed_questions_checkpoint_requirements.requirements.questions?.map(
+                    (question, index) => (
+                      <p key={index} className="text-sm">
+                        • {question}
+                      </p>
+                    )
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* 후속 체크포인트 우대사항 질문 */}
@@ -368,14 +458,19 @@ const PortfolioForm = () => {
             <h3 className="text-lg font-medium text-gray-900 mb-3">
               우대사항 기준 check point 꼬리 질문
             </h3>
-            <div className="space-y-4">
-              {result.followed_questions_checkpoint_preferences?.requirements?.map(
+            {Array.isArray(
+              result.followed_questions_checkpoint_preferences.requirements
+            ) ? (
+              result.followed_questions_checkpoint_preferences.requirements.map(
                 (item, index) => (
                   <div key={index} className="bg-gray-50 p-3 rounded">
-                    <p className="text-sm mb-2">
-                      <span className="font-medium">기술 키워드 : </span>
-                      {item?.tech_keyword}
-                    </p>
+                    {/* 기술 키워드가 있을 경우에만 표시 */}
+                    {item?.tech_keyword && (
+                      <p className="text-sm mb-2">
+                        <span className="font-medium">기술 키워드: </span>
+                        {item.tech_keyword}
+                      </p>
+                    )}
                     <div className="space-y-2">
                       {item?.questions?.map((question, qIndex) => (
                         <p key={qIndex} className="text-sm">
@@ -385,8 +480,31 @@ const PortfolioForm = () => {
                     </div>
                   </div>
                 )
-              )}
-            </div>
+              )
+            ) : (
+              <div className="bg-gray-50 p-3 rounded">
+                {/* 기술 키워드가 있을 경우에만 표시 */}
+                {result.followed_questions_checkpoint_preferences.requirements
+                  .tech_keyword && (
+                  <p className="text-sm mb-2">
+                    <span className="font-medium">기술 키워드: </span>
+                    {
+                      result.followed_questions_checkpoint_preferences
+                        .requirements.tech_keyword
+                    }
+                  </p>
+                )}
+                <div className="space-y-2">
+                  {result.followed_questions_checkpoint_preferences.requirements.questions?.map(
+                    (question, index) => (
+                      <p key={index} className="text-sm">
+                        • {question}
+                      </p>
+                    )
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
